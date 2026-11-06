@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOMA V2 Migration Portal</title>
+    <!-- Menggunakan font modern yang mirip dengan aslinya -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <style>
+        :root {
+            --koma-orange: #E8833A;
+            --binance-yellow: #F3BA2F;
+            --bg-dark: #0a0b10;
+            --card-bg: rgba(25, 28, 36, 0.85);
+        }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: var(--bg-dark); 
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(243, 186, 47, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(232, 131, 58, 0.08), transparent 25%);
+            color: white; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .hero-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            color: var(--binance-yellow);
+            text-shadow: 0px 4px 10px rgba(243, 186, 47, 0.3);
+            line-height: 1.1;
+        }
+        .hero-section p {
+            color: #a0aab8;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        .logo-img {
+            width: 180px;
+            margin-bottom: 10px;
+        }
+        .card { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px; 
+            border-radius: 20px; 
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .connect-btn {
+            background-color: var(--binance-yellow);
+            color: #000;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .connect-btn:hover { background-color: #e0a820; transform: translateY(-2px); }
+        
+        .action-btn {
+            background-color: var(--koma-orange);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .action-btn:hover { background-color: #c96e2a; transform: translateY(-2px); }
+        .action-btn.secondary { background-color: #2a2e38; border: 1px solid var(--koma-orange); color: var(--koma-orange);}
+        .action-btn.secondary:hover { background-color: #3a3f4b; }
+        
+        .wallet-info {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--binance-yellow);
+            display: none;
+        }
+        .status-msg {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-height: 20px;
+            color: #a0aab8;
+            word-break: break-word;
+        }
+        .success-text { color: #4ade80; }
+        .error-text { color: #f87171; }
+        
+        #claimSection { display: none; }
+
+        /* Bagian Sosial Media & Link */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+        .social-links a {
+            color: #a0aab8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .social-links a:hover { color: var(--binance-yellow); }
+        
+        .footer { 
+            margin-top: 30px; 
+            font-size: 0.8rem; 
+            color: #555; 
+            text-align: center; 
+            max-width: 400px;
+        }
+        .footer a { color: #888; text-decoration: none; }
+        .footer a:hover { color: var(--koma-orange); }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <!-- Logo Resmi KOMA diambil dari aset website -->
+        <img src="https://i.ibb.co.com/RTTmCJnQ/logo-9-Ogr-CXG.png" alt="KOMA Logo" class="logo-img" style="border-radius: 50%;">
+        <h1>Make BNB Great Again!</h1>
+        <p>Portal Migrasi Resmi Komunitas KOMA V2.</p>
+    </div>
+
+    <div class="card">
+        <button id="connectBtn" class="connect-btn" onclick="connectWallet()">Hubungkan Wallet</button>
+        
+        <div id="walletInfo" class="wallet-info"></div>
+        
+        <div id="claimSection">
+            <button id="claimTokenBtn" class="action-btn" onclick="claimToken()">Klaim Token KOMA V2</button>
+            <button id="claimLPBtn" class="action-btn secondary" onclick="claimLP()">Migrasi Likuiditas (LP)</button>
+        </div>
+        
+        <div id="status" class="status-msg"></div>
+    </div>
+
+    <!-- Tautan Sosial Media yang berhasil diekstrak -->
+    <div class="social-links">
+        <a href="https://x.com/komabnb" target="_blank">Twitter / X</a>
+        <a href="https://t.me/komabnb" target="_blank">Telegram</a>
+        <a href="https://dexscreener.com/bsc/0x0ec12db33551afba853b691b4edf49196ea0e99a" target="_blank">DexScreener</a>
+    </div>
+
+    <div class="footer">
+        <p>Beli KOMA di <a href="https://pancakeswap.finance/?inputCurrency=BNB&outputCurrency=0xd5eaAaC47bD1993d661bc087E15dfb079a7f3C19" target="_blank">PancakeSwap</a> | <a href="https://thena.fi/swap?inputCurrency=BNB&outputCurrency=0xd5eaaac47bd1993d661bc087e15dfb079a7f3c19&swapType=1" target="_blank">Thena</a></p>
+        <p>Powered by KOMA Community | BNB Smart Chain</p>
+    </div>
+
+    <script>
+        // --- KONFIGURASI KONTRAK ---
+        const MIGRATOR_ADDR = "0xFd6AD4d7Fd4f9b1579fa8F5a03dbaBbc65928223"; 
+        const OLD_KOMA = "0xd5eaAaC47bD1993d661bc087E15dfb079a7f3C19";
+        const OLD_PAIR = "0x0eC12dB33551AFBa853b691B4EDf49196eA0e99A";
+        
+        const MIGRATOR_ABI = [
+            "function migrateToken(uint256 amount, bytes32[] calldata proof) external",
+            "function migrateLP(uint256 lpAmount, bytes32[] calldata proof) external"
+        ];
+        const ERC20_ABI = [
+            "function approve(address spender, uint256 amount) external returns (bool)",
+            "function balanceOf(address account) view returns (uint256)"
+        ];
+
+        let provider, signer, userAddress;
+        let merkleData = {}; 
+
+        function setStatus(msg, isError = false, isSuccess = false) {
+            const el = document.getElementById("status");
+            el.innerText = msg;
+            el.className = "status-msg " + (isError ? "error-text" : isSuccess ? "success-text" : "");
+        }
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    provider = new ethers.BrowserProvider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    signer = await provider.getSigner();
+                    userAddress = await signer.getAddress();
+                    
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: '0x38' }], 
+                    }).catch((switchError) => {
+                        if (switchError.code === 4902) { alert("Silakan tambahkan jaringan BSC ke wallet Anda."); }
+                    });
+
+                    document.getElementById("connectBtn").style.display = "none";
+                    
+                    const infoEl = document.getElementById("walletInfo");
+                    infoEl.style.display = "block";
+                    infoEl.innerHTML = `Terhubung: <b>${userAddress.slice(0,6)}...${userAddress.slice(-4)}</b>`;
+                    
+                    document.getElementById("claimSection").style.display = "block";
+                    setStatus("Memuat data...");
+
+                    fetch('./work/merkle_proofs.json')
+                        .then(res => res.json())
+                        .then(data => { 
+                            merkleData = data; 
+                            setStatus("Data siap. Silakan pilih klaim.");
+                        })
+                        .catch(err => setStatus("Gagal memuat data migrasi. Pastikan file JSON tersedia.", true));
+
+                } catch (error) {
+                    setStatus("Gagal connect: " + error.message, true);
+                }
+            } else {
+                alert("Instal MetaMask atau TrustWallet terlebih dahulu!");
+            }
+        }
+
+        async function claimToken() {
+            const data = merkleData[userAddress.toLowerCase()] || merkleData[userAddress];
+            if (!data) return setStatus("Alamat Anda tidak terdaftar dalam snapshot migrasi.", true);
+            
+            setStatus("Menunggu persetujuan Approve Token...");
+            try {
+                const oldKomaContract = new ethers.Contract(OLD_KOMA, ERC20_ABI, signer);
+                const txApprove = await oldKomaContract.approve(MIGRATOR_ADDR, data.amount);
+                await txApprove.wait();
+
+                setStatus("Memproses Klaim Token...");
+                const migratorContract = new ethers.Contract(MIGRATOR_ADDR, MIGRATOR_ABI, signer);
+                const txClaim = await migratorContract.migrateToken(data.amount, data.proof);
+                await txClaim.wait();
+                
+                setStatus("Berhasil! Token KOMA V2 sudah masuk ke wallet Anda.", false, true);
+            } catch (e) {
+                setStatus("Error: " + (e.reason || e.message), true);
+            }
+        }
+
+        async function claimLP() {
+            const data = merkleData[userAddress.toLowerCase()] || merkleData[userAddress];
+            if (!data) return setStatus("Alamat Anda tidak terdaftar dalam snapshot LP.", true);
+            
+            setStatus("Menunggu persetujuan Approve LP Token...");
+            try {
+                const oldPairContract = new ethers.Contract(OLD_PAIR, ERC20_ABI, signer);
+                const txApprove = await oldPairContract.approve(MIGRATOR_ADDR, data.amount);
+                await txApprove.wait();
+
+                setStatus("Memproses Migrasi Likuiditas...");
+                const migratorContract = new ethers.Contract(MIGRATOR_ADDR, MIGRATOR_ABI, signer);
+                const txClaim = await migratorContract.migrateLP(data.amount, data.proof);
+                await txClaim.wait();
+                
+                setStatus("Berhasil! Likuiditas Anda telah dipindahkan ke pool baru.", false, true);
+            } catch (e) {
+                setStatus("Error: " + (e.reason || e.message), true);
+            }
+        }
+    </script>
+</body>
+</html>
