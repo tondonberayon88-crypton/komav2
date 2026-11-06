@@ -1,193 +1,255 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en" style="color-scheme:dark" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>KOMA V2 Migration Portal</title>
-    <!-- Menggunakan font modern yang mirip dengan aslinya -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Fonts dari DappBay -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Dots&display=swap" rel="stylesheet" />
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    
     <style>
         :root {
-            --koma-orange: #E8833A;
-            --binance-yellow: #F3BA2F;
-            --bg-dark: #0a0b10;
-            --card-bg: rgba(25, 28, 36, 0.85);
+            --ui-colors-bg-1: #181A1E;
+            --ui-colors-bg-2: #1E2026;
+            --ui-colors-bg-3: #14151A;
+            --ui-colors-text-primary: #f7f7f8;
+            --ui-colors-text-secondary: #C4C5CB;
+            --ui-colors-text-brand: #FFE900;
+            --ui-colors-layer-3: #1E2026;
+            --ui-colors-layer-4: #373943;
+            --ui-colors-scene-success: #18DC7E;
+            --ui-colors-scene-danger: #F8545F;
         }
-        body { 
-            font-family: 'Space Grotesk', sans-serif; 
-            background-color: var(--bg-dark); 
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(243, 186, 47, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(232, 131, 58, 0.08), transparent 25%);
-            color: white; 
-            display: flex; 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--ui-colors-bg-1);
+            color: var(--ui-colors-text-primary);
+            font-family: 'Inter', sans-serif;
+            display: flex;
             flex-direction: column;
-            align-items: center; 
-            justify-content: center;
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 20px;
-            box-sizing: border-box;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.5;
         }
-        .hero-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .hero-section h1 {
-            font-size: 2.5rem;
-            margin: 0;
-            text-transform: uppercase;
-            color: var(--binance-yellow);
-            text-shadow: 0px 4px 10px rgba(243, 186, 47, 0.3);
-            line-height: 1.1;
-        }
-        .hero-section p {
-            color: #a0aab8;
-            font-size: 1.1rem;
-            margin-top: 10px;
-        }
-        .logo-img {
-            width: 180px;
-            margin-bottom: 10px;
-        }
-        .card { 
-            background: var(--card-bg); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px; 
-            border-radius: 20px; 
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        .connect-btn {
-            background-color: var(--binance-yellow);
-            color: #000;
-            font-weight: 700;
-            font-size: 1.1rem;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 12px;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .connect-btn:hover { background-color: #e0a820; transform: translateY(-2px); }
         
-        .action-btn {
-            background-color: var(--koma-orange);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 12px;
+        /* Header */
+        header {
             width: 100%;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+            height: 64px;
+            background: var(--ui-colors-bg-1);
+            border-bottom: 1px solid var(--ui-colors-layer-4);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .action-btn:hover { background-color: #c96e2a; transform: translateY(-2px); }
-        .action-btn.secondary { background-color: #2a2e38; border: 1px solid var(--koma-orange); color: var(--koma-orange);}
-        .action-btn.secondary:hover { background-color: #3a3f4b; }
+        header img { height: 32px; border-radius: 50%; }
+        header span { margin-left: 12px; font-weight: 700; font-size: 18px; }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Grid Layout (Mirip DappBay) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 410px;
+            gap: 32px;
+            width: 100%;
+            margin-top: 24px;
+            align-items: start;
+        }
+        @media (max-width: 1046px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+        }
+        .hero h1 {
+            font-family: "Zen Dots", sans-serif;
+            font-size: 34px;
+            line-height: 42px;
+            letter-spacing: 1.36px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .hero h1 span { color: var(--ui-colors-text-brand); }
+        .hero p {
+            font-size: 16px;
+            color: var(--ui-colors-text-primary);
+            margin-bottom: 24px;
+        }
         
-        .wallet-info {
-            background: rgba(0,0,0,0.3);
-            padding: 10px;
+        /* Gambar Banner */
+        .banner-img {
+            width: 100%;
+            border-radius: 16px;
+            object-fit: contain;
+            background: var(--ui-colors-bg-2);
+            padding: 60px;
+            border: 1px solid var(--ui-colors-layer-4);
+            aspect-ratio: 16/9;
+        }
+
+        /* Action Card */
+        .action-card {
+            background: var(--ui-colors-bg-2);
+            border: 1px solid var(--ui-colors-bg-3);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 24px 64px 0 rgba(0,0,0,0.48);
+        }
+        .action-card h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--ui-colors-layer-4);
+        }
+        
+        /* Status Box */
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--ui-colors-bg-3);
+            padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 20px;
-            font-size: 0.9rem;
-            color: var(--binance-yellow);
+            font-size: 14px;
+        }
+        .status-row .val { font-weight: 600; color: var(--ui-colors-text-secondary); }
+        .status-row .val.active { color: var(--ui-colors-scene-success); }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .btn-primary {
+            background: #f1f2f3;
+            color: #14151A;
+        }
+        .btn-primary:hover { background: #e1e2e5; }
+        
+        .btn-brand {
+            background: var(--ui-colors-text-brand);
+            color: #14151A;
+        }
+        .btn-brand:hover { opacity: 0.8; }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--ui-colors-text-secondary);
+            color: var(--ui-colors-text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 16px;
             display: none;
         }
-        .status-msg {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            min-height: 20px;
-            color: #a0aab8;
-            word-break: break-word;
-        }
-        .success-text { color: #4ade80; }
-        .error-text { color: #f87171; }
-        
-        #claimSection { display: none; }
+        .alert-success { background: rgba(24, 220, 126, 0.1); color: var(--ui-colors-scene-success); border: 1px solid var(--ui-colors-scene-success); }
+        .alert-error { background: rgba(248, 84, 95, 0.1); color: var(--ui-colors-scene-danger); border: 1px solid var(--ui-colors-scene-danger); }
 
-        /* Bagian Sosial Media & Link */
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            justify-content: center;
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: var(--ui-colors-text-secondary);
+            font-size: 12px;
         }
-        .social-links a {
-            color: #a0aab8;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .social-links a:hover { color: var(--binance-yellow); }
-        
-        .footer { 
-            margin-top: 30px; 
-            font-size: 0.8rem; 
-            color: #555; 
-            text-align: center; 
-            max-width: 400px;
-        }
-        .footer a { color: #888; text-decoration: none; }
-        .footer a:hover { color: var(--koma-orange); }
     </style>
 </head>
 <body>
 
-    <div class="hero-section">
-        <!-- Logo Resmi KOMA diambil dari aset website -->
-        <img src="https://i.ibb.co.com/RTTmCJnQ/logo-9-Ogr-CXG.png" alt="KOMA Logo" class="logo-img" style="border-radius: 50%;">
-        <h1>Make BNB Great Again!</h1>
-        <p>Portal Migrasi Resmi Komunitas KOMA V2.</p>
-    </div>
+    <header>
+        <!-- Menggunakan Logo Resmi KOMA dari DappBay -->
+        <img src="https://www.logofacade.com/token_icon_request/670755d661081168c2e04412_1728533974.png" alt="KOMA Logo">
+        <span>KOMA V2 Campaign</span>
+    </header>
 
-    <div class="card">
-        <button id="connectBtn" class="connect-btn" onclick="connectWallet()">Hubungkan Wallet</button>
-        
-        <div id="walletInfo" class="wallet-info"></div>
-        
-        <div id="claimSection">
-            <button id="claimTokenBtn" class="action-btn" onclick="claimToken()">Klaim Token KOMA V2</button>
-            <button id="claimLPBtn" class="action-btn secondary" onclick="claimLP()">Migrasi Likuiditas (LP)</button>
+    <div class="container">
+        <div class="dashboard-grid">
+            
+            <!-- KIRI: Konten & Gambar -->
+            <div class="hero">
+                <h1>KOMA V2 <span>Migration</span></h1>
+                <p>Klaim token KOMA V2 (0% Tax) Anda secara gratis. Token lama Anda akan dibakar, dan token baru langsung masuk ke wallet Anda.</p>
+                <!-- Menggunakan Logo Resmi KOMA dari DappBay -->
+                <img src="https://www.logofacade.com/token_icon_request/670755d661081168c2e04412_1728533974.png" alt="KOMA Banner" class="banner-img">
+            </div>
+
+            <!-- KANAN: Action Card -->
+            <div class="action-card">
+                <h2>Claim Portal</h2>
+                
+                <div class="status-row">
+                    <span>Network</span>
+                    <span id="networkStatus" class="val">Not Connected</span>
+                </div>
+
+                <div id="walletInfo" class="status-row" style="display: none;">
+                    <span>Wallet</span>
+                    <span id="addressText" class="val active"></span>
+                </div>
+
+                <button id="connectBtn" class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
+
+                <div id="claimSection" style="display: none;">
+                    <button id="claimBtn" class="btn btn-brand" onclick="claimToken()">Claim KOMA V2</button>
+                    <!-- Tombol LP dinonaktifkan untuk sementara sampai pool baru dibuat -->
+                    <button class="btn btn-secondary" disabled>Migrate LP (Coming Soon)</button>
+                </div>
+
+                <div id="alertBox" class="alert"></div>
+            </div>
+
         </div>
-        
-        <div id="status" class="status-msg"></div>
-    </div>
 
-    <!-- Tautan Sosial Media yang berhasil diekstrak -->
-    <div class="social-links">
-        <a href="https://x.com/komabnb" target="_blank">Twitter / X</a>
-        <a href="https://t.me/komabnb" target="_blank">Telegram</a>
-        <a href="https://dexscreener.com/bsc/0x0ec12db33551afba853b691b4edf49196ea0e99a" target="_blank">DexScreener</a>
-    </div>
-
-    <div class="footer">
-        <p>Beli KOMA di <a href="https://pancakeswap.finance/?inputCurrency=BNB&outputCurrency=0xd5eaAaC47bD1993d661bc087E15dfb079a7f3C19" target="_blank">PancakeSwap</a> | <a href="https://thena.fi/swap?inputCurrency=BNB&outputCurrency=0xd5eaaac47bd1993d661bc087e15dfb079a7f3c19&swapType=1" target="_blank">Thena</a></p>
-        <p>Powered by KOMA Community | BNB Smart Chain</p>
+        <div class="footer">
+            Powered by KOMA Community | BNB Smart Chain
+        </div>
     </div>
 
     <script>
-        // --- KONFIGURASI KONTRAK ---
-        const MIGRATOR_ADDR = "0xFd6AD4d7Fd4f9b1579fa8F5a03dbaBbc65928223"; 
+        // ALAMAT BARU HASIL DEPLOY ULANG
+        const MIGRATOR_ADDR = "0x89beE1ad1EF7aC5190D2beaa7890daB4d7eC6ded"; 
         const OLD_KOMA = "0xd5eaAaC47bD1993d661bc087E15dfb079a7f3C19";
-        const OLD_PAIR = "0x0eC12dB33551AFBa853b691B4EDf49196eA0e99A";
         
-        const MIGRATOR_ABI = [
-            "function migrateToken(uint256 amount, bytes32[] calldata proof) external",
-            "function migrateLP(uint256 lpAmount, bytes32[] calldata proof) external"
-        ];
+        const MIGRATOR_ABI = ["function migrateToken(uint256 amount, bytes32[] calldata proof) external"];
         const ERC20_ABI = [
             "function approve(address spender, uint256 amount) external returns (bool)",
             "function balanceOf(address account) view returns (uint256)"
@@ -196,10 +258,12 @@
         let provider, signer, userAddress;
         let merkleData = {}; 
 
-        function setStatus(msg, isError = false, isSuccess = false) {
-            const el = document.getElementById("status");
+        function showAlert(msg, type) {
+            const el = document.getElementById("alertBox");
             el.innerText = msg;
-            el.className = "status-msg " + (isError ? "error-text" : isSuccess ? "success-text" : "");
+            el.className = "alert alert-" + type;
+            el.style.display = "block";
+            setTimeout(() => { el.style.display = "none"; }, 8000);
         }
 
         async function connectWallet() {
@@ -214,73 +278,51 @@
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: '0x38' }], 
                     }).catch((switchError) => {
-                        if (switchError.code === 4902) { alert("Silakan tambahkan jaringan BSC ke wallet Anda."); }
+                        if (switchError.code === 4902) { showAlert("Tambahkan jaringan BSC ke wallet Anda.", "error"); }
                     });
 
                     document.getElementById("connectBtn").style.display = "none";
-                    
-                    const infoEl = document.getElementById("walletInfo");
-                    infoEl.style.display = "block";
-                    infoEl.innerHTML = `Terhubung: <b>${userAddress.slice(0,6)}...${userAddress.slice(-4)}</b>`;
+                    document.getElementById("walletInfo").style.display = "flex";
+                    document.getElementById("addressText").innerText = `${userAddress.slice(0,6)}...${userAddress.slice(-4)}`;
+                    document.getElementById("networkStatus").innerText = "BSC Mainnet";
+                    document.getElementById("networkStatus").className = "val active";
                     
                     document.getElementById("claimSection").style.display = "block";
-                    setStatus("Memuat data...");
 
+                    // Load Data Merkle
                     fetch('./work/merkle_proofs.json')
                         .then(res => res.json())
-                        .then(data => { 
-                            merkleData = data; 
-                            setStatus("Data siap. Silakan pilih klaim.");
-                        })
-                        .catch(err => setStatus("Gagal memuat data migrasi. Pastikan file JSON tersedia.", true));
+                        .then(data => { merkleData = data; })
+                        .catch(err => showAlert("Gagal memuat data migrasi.", "error"));
 
                 } catch (error) {
-                    setStatus("Gagal connect: " + error.message, true);
+                    showAlert("Gagal connect: " + error.message, "error");
                 }
             } else {
-                alert("Instal MetaMask atau TrustWallet terlebih dahulu!");
+                showAlert("Instal MetaMask atau TrustWallet terlebih dahulu!", "error");
             }
         }
 
         async function claimToken() {
             const data = merkleData[userAddress.toLowerCase()] || merkleData[userAddress];
-            if (!data) return setStatus("Alamat Anda tidak terdaftar dalam snapshot migrasi.", true);
+            if (!data) return showAlert("Alamat Anda tidak terdaftar dalam snapshot migrasi.", "error");
             
-            setStatus("Menunggu persetujuan Approve Token...");
             try {
+                const amountInWei = BigInt(data.amount); 
+                
                 const oldKomaContract = new ethers.Contract(OLD_KOMA, ERC20_ABI, signer);
-                const txApprove = await oldKomaContract.approve(MIGRATOR_ADDR, data.amount);
+                const txApprove = await oldKomaContract.approve(MIGRATOR_ADDR, amountInWei);
+                showAlert("Menunggu konfirmasi Approve...", "success");
                 await txApprove.wait();
 
-                setStatus("Memproses Klaim Token...");
                 const migratorContract = new ethers.Contract(MIGRATOR_ADDR, MIGRATOR_ABI, signer);
-                const txClaim = await migratorContract.migrateToken(data.amount, data.proof);
+                const txClaim = await migratorContract.migrateToken(amountInWei, data.proof);
+                showAlert("Memproses Klaim...", "success");
                 await txClaim.wait();
                 
-                setStatus("Berhasil! Token KOMA V2 sudah masuk ke wallet Anda.", false, true);
+                showAlert("Berhasil! KOMA V2 sudah masuk ke wallet Anda.", "success");
             } catch (e) {
-                setStatus("Error: " + (e.reason || e.message), true);
-            }
-        }
-
-        async function claimLP() {
-            const data = merkleData[userAddress.toLowerCase()] || merkleData[userAddress];
-            if (!data) return setStatus("Alamat Anda tidak terdaftar dalam snapshot LP.", true);
-            
-            setStatus("Menunggu persetujuan Approve LP Token...");
-            try {
-                const oldPairContract = new ethers.Contract(OLD_PAIR, ERC20_ABI, signer);
-                const txApprove = await oldPairContract.approve(MIGRATOR_ADDR, data.amount);
-                await txApprove.wait();
-
-                setStatus("Memproses Migrasi Likuiditas...");
-                const migratorContract = new ethers.Contract(MIGRATOR_ADDR, MIGRATOR_ABI, signer);
-                const txClaim = await migratorContract.migrateLP(data.amount, data.proof);
-                await txClaim.wait();
-                
-                setStatus("Berhasil! Likuiditas Anda telah dipindahkan ke pool baru.", false, true);
-            } catch (e) {
-                setStatus("Error: " + (e.reason || e.message), true);
+                showAlert("Error: " + (e.reason || e.message), "error");
             }
         }
     </script>
